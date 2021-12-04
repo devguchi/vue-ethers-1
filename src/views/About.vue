@@ -13,7 +13,10 @@
         <dt>Block Number</dt>
         <dd>{{ blockNumber }}</dd>
       </dl>
-      <input v-model="addressForGetBalance" placeholder="Address For Get Balance" />
+      <input
+        v-model="addressForGetBalance"
+        placeholder="Address For Get Balance"
+      />
       <button @click="getBalance">balance</button>
       <dl>
         <dt>Balance</dt>
@@ -23,14 +26,22 @@
         <dt>My Balance</dt>
         <dd>{{ myBalance }}</dd>
       </dl>
-      <div style="padding:10px; background:#e2e2e2;">
-        <input v-model="addressForSend" placeHolder="Address For Send ETH" style="margin-bottom:10px;"/><br>
-        <input v-model="sendAmount" placeHolder="amount (ETH)" style="margin-bottom:10px;"/><br>
+      <div style="padding: 10px; background: #e2e2e2">
+        <input
+          v-model="addressForSend"
+          placeHolder="Address For Send ETH"
+          style="margin-bottom: 10px"
+        /><br />
+        <input
+          v-model="sendAmount"
+          placeHolder="amount (ETH)"
+          style="margin-bottom: 10px"
+        /><br />
         <button @click="sendEth" v-if="!isSending">SEND!</button>
         <p v-else>SENDING...</p>
-        <p v-if="sendError" style="color:red;">{{sendError}}</p>
-        <p v-if="txResponseHash" style="color:blue;">
-          {{txResponseHash}}
+        <p v-if="sendError" style="color: red">{{ sendError }}</p>
+        <p v-if="txResponseHash" style="color: blue">
+          {{ txResponseHash }}
         </p>
       </div>
     </div>
@@ -71,10 +82,10 @@ export default defineComponent({
     myBalance: 0.0 as number,
     signer: null as any,
     network: network as Network,
-    sendAmount: null as number|null,
+    sendAmount: null as number | null,
     isSending: false as boolean,
-    sendError: null as null|string,
-    txResponseHash: null as null|string
+    sendError: null as null | string,
+    txResponseHash: null as null | string,
   }),
   async created() {
     await window.ethereum.enable();
@@ -112,22 +123,24 @@ export default defineComponent({
       this.sendError = null;
       this.txResponseHash = null;
       if (this.sendAmount === null || this.sendAmount <= 0) {
-        alert('please input AMOUNT');
+        alert("please input AMOUNT");
         this.isSending = false;
         return;
       }
       const eth = this.sendAmount.toString();
       const wei = ethers.utils.parseEther(eth);
-      console.log('wei', wei);
-      const tx = await this.signer.sendTransaction({
-        to: this.addressForSend,
-        from: this.myAccountAddress,
-        value: wei
-      }).catch((err:any) => this.sendError = err.toString());
-      console.log('transactionResponse', tx);
+      console.log("wei", wei);
+      const tx = await this.signer
+        .sendTransaction({
+          to: this.addressForSend,
+          from: this.myAccountAddress,
+          value: wei,
+        })
+        .catch((err: any) => (this.sendError = err.toString()));
+      console.log("transactionResponse", tx);
       this.txResponseHash = tx.hash;
       this.isSending = false;
-    }
+    },
   },
 });
 </script>
